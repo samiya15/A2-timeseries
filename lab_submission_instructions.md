@@ -181,6 +181,106 @@ For all three tiers, submit the link to a short video (not more than 4 minutes) 
 | **Link to the video:** |           |
 
 ---
+## 1. Data
+
+### The stock: JPMorgan Chase & Co. (JPM)
+
+We forecast the closing price of **JPMorgan Chase (JPM)**, the largest bank in the United States, listed on the New 
+York Stock Exchange. We chose a bank because its profits depend directly on interest rates: when rates rise, the gap 
+between what a bank earns on loans and what it pays on deposits usually widens. That gives the predictors in this lab 
+a clear economic reason to matter for JPM:
+
+- **S&P 500 and VIX:** JPM is a large part of the US market and moves with overall market mood.
+- **10-year US Treasury yield (US10Y):** the main interest-rate signal for a bank. In our data, JPM's daily 
+- returns correlate **0.29** with changes in the 10-year yield, about twice as strongly as the S&P 500 (0.14) or the 
+- technology fund (0.11). This supports the idea that interest rates matter more for JPM than for the market as a whole.
+- **Brent crude, gold and the US dollar:** broader economic conditions. Gold and the dollar show almost no 
+- same-day correlation with JPM (−0.06 and −0.02), so we do not expect them to help much.
+
+### Source and download date
+
+| Item | Value |
+|:-----|:------|
+| Source | Yahoo Finance, via `python download_data.py --target JPM` |
+| **Download date** | **17 November 2026** |
+| Period | 2 January 2015 to 9 November 2026 |
+| Trading days | 2,981 |
+| Predictors | S&P 500, XLK (technology), VIX, 10-year yield, US dollar index, Brent crude, gold |
+
+### Data quality report
+
+| Check | Result |
+|:------|-------:|
+| Duplicate dates | 0 |
+| Missing values | 0 |
+| Non-positive prices | 0 |
+| Days with zero volume | 0 |
+| High below low | 0 |
+| Longest gap (days) | 4 |
+| Days with a move over 10% | 7 |
+
+The data is clean: there are no duplicates, missing values, impossible prices or untraded days. The longest gap of 
+4 calendar days is a long weekend with a public holiday, not missing data. The 7 days with moves over 10% are genuine 
+market events, mostly from the COVID-19 crash of March 2020, and we kept them. Removing them would make the models look 
+more accurate than they would be in a real crisis. The predictor markets trade on a few days when the NYSE is closed 
+(2,988 rows against 2,981), so predictors are aligned to JPM's trading days and forward-filled for at most 3 days.
+
+With almost 12 years of history, the data is long enough for the walk-forward settings in the notebooks, so we did 
+not change `INITIAL_TRAIN`.
+
+### What the data shows
+
+- **Candlestick charts:** we plotted the last 90 trading days and the COVID-19 crash (February to April 2020). In the
+- crash, JPM fell from about $115 to about $66 (roughly −40%) in a month, while daily volume rose to around four times
+- its normal level.
+- **Returns are not normally distributed:** the histogram of daily log returns has a much taller peak and much fatter 
+- tails than a normal curve. The worst days were around −15%, which a normal distribution treats as practically impossible.
+- **Volatility clusters:** large moves come in groups (for example, 2020) rather than being spread evenly over time.
+
+### Stationarity
+
+
+---
+## Notebook Exercise Answers
+
+### Notebook 1: Market Data, Candlestick Charts, and Returns
+
+**Stock:** JPMorgan Chase (JPM) | **Data downloaded:** 17 November 2026 | **Answered by:** Samiya Issack
+
+**1. In the data quality report, which line would worry you most if it were not zero, and why?**
+
+`high_below_low` would worry me most. A day's high can never be below its low, so a non-zero value means the data is 
+corrupted, not just incomplete, and we could not trust the Close prices the models learn from. For JPM every error line
+is zero; the 7 days with moves over 10% are real market events from 2020, not errors.
+
+**2. "The S&P 500 correlates 0.7 with our stock, so it will be an excellent predictor." What is missing from that 
+argument?**
+
+JPM's correlation with the S&P 500 is 0.71, but it is a same-day correlation: both markets close at the same time, 
+so we do not know today's S&P return when we make the forecast. What matters is whether yesterday's S&P return helps 
+predict today's JPM return, and that relationship is usually much weaker.
+
+**3. What does the volume do when the price falls sharply (February to April 2020)? Why might that be?**
+
+Between February and late March 2020, JPM fell from about $115 to about $66, roughly 40%, while daily volume rose
+from about 10 million shares to 35–45 million, around four times normal. The heaviest volume came on the sharpest
+down days, because many investors sold at once out of panic, to meet margin calls, or to meet fund redemptions. A 
+smaller spike in mid-April matches JPM's first-quarter earnings, when it reported large provisions for COVID-related 
+loan losses.
+
+**4. A price rises 50% in year one and falls 50% in year two. What are the total simple and log returns?**
+
+The price goes from 100 to 150 and then to 75, so the total simple return is −25%, not 0%. The total log return 
+is ln(1.5) + ln(0.5) = 0.405 − 0.693 = −0.288, which equals ln(0.75). Log returns add up across periods and simple 
+returns do not, which is one reason we model log returns.
+
+**5. Name one risk management decision that would be wrong if returns followed the normal curve.**
+
+JPM's returns have a much taller peak and much fatter tails than the normal curve, and its worst days were 
+around −15%, a move the normal curve treats as practically impossible. A Value-at-Risk estimate based on the
+normal curve would therefore badly underestimate how often large losses happen, and the bank could hold too 
+little capital for a crash like March 2020.
+
 
 ## How Your Submission Will Be Marked (Out of 100)
 

@@ -1,0 +1,10 @@
+# requirements/dev.txt
+# What you need to work on the lab: everything in base.txt, plus tools for
+# running notebooks, testing, and formatting.
+-r base.txt
+
+jupyter
+ipykernel
+pytest
+black
+flake8

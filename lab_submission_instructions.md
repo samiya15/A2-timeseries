@@ -20,9 +20,9 @@
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |             |
-| **Name:**                                                                                          |             |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
+| **Student ID:**                                                                                   |  166437           |
+| **Name:**                                                                              |    Fatuma Mohamed                     |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** | I was responsible for Notebook 2 (stationarity and returns). I ran the ADF and KPSS tests on JPM's closing price and log return, studied the autocorrelation of returns, repeated the spurious regression experiment with different sample sizes and predictors, and compared GARCH models with fat-tailed and normal errors. I learned that stock prices are not stationary, so we must forecast returns instead, that regressing one price on another can show a strong relationship that is not real, and that the size of tomorrow's move is far easier to predict than its direction. |          
 
 **Member 3**
 
@@ -238,7 +238,20 @@ not change `INITIAL_TRAIN`.
 - **Volatility clusters:** large moves come in groups (for example, 2020) rather than being spread evenly over time.
 
 ### Stationarity
+We tested JPM's closing price and its daily log return with two tests that ask opposite questions. The ADF test assumes the series is non-stationary, and the KPSS test assumes it is stationary. We only call a series stationary when both agree.
 
+| Series | ADF p-value | KPSS p-value | Verdict |
+|:-------|------------:|-------------:|:--------|
+| Closing price | 0.9976 | 0.0100 | Non-stationary |
+| Log of the closing price | 0.9067 | 0.0100 | Non-stationary |
+| First difference of the price | 0.0000 | 0.0963 | Stationary |
+| **Log return** | **0.0000** | **0.1000** | **Stationary** |
+
+**Conclusion:** JPM's closing price is not stationary. It trends from about $50 in 2015 to about $350 in 2026, and its 63-day rolling standard deviation grows from about 2 to about 20 dollars. The daily log return is stationary: it stays centred on zero, and both tests agree. Taking the logarithm alone was not enough, and removing a straight-line trend did not work either (ADF p = 0.85). Only differencing removed the wandering. We therefore forecast the **log return** and convert it back to a price, as the lab requires.
+
+The return is not perfectly stable, though. Its volatility comes in clusters: the rolling standard deviation is usually 0.01 to 0.02, but it rose to about 0.057 during the COVID-19 crash in 2020.
+
+We also checked for a calendar pattern. No weekday had an average return that was significantly different from zero (the largest t-statistic was 1.37, for Wednesday), and the 21-day seasonal component of the decomposition had a range of only 0.007, against 2.15 for the trend. JPM's daily returns show no seasonality worth modelling.
 
 ---
 ## Notebook Exercise Answers
@@ -280,6 +293,33 @@ JPM's returns have a much taller peak and much fatter tails than the normal curv
 around −15%, a move the normal curve treats as practically impossible. A Value-at-Risk estimate based on the
 normal curve would therefore badly underestimate how often large losses happen, and the bank could hold too 
 little capital for a crash like March 2020.
+### Notebook 2: Stationarity and Returns
+
+**Stock:** JPMorgan Chase (JPM) | **Answered by:** Fatuma Mohamed
+
+**1. What do the ADF results on the closing price and the log return mean for forecasting?**
+
+For JPM's closing price, the ADF p-value is 0.998, so we cannot reject the idea that the price wanders with no fixed level. A model trained on past prices would be learning from a series whose average keeps changing. For the log return the p-value is close to 0 (and KPSS agrees), so returns have a stable centre and spread, and a relationship learned from the past is more likely to still hold in the future. This is why we forecast returns and not prices.
+
+**2. The log transformation alone did not make the price stationary. What did it achieve instead?**
+
+The log price is still non-stationary (ADF p = 0.907), because the upward trend is still there. What the log did was stabilise the variance: a $10 move when JPM was at $50 and a $70 move when it was at $350 become changes of a similar size in log terms. Differencing the log price then removes the trend, which gives the log return.
+
+**3. What happens to the share of "significant" relationships with n_steps = 100 and 5000?**
+
+The regression on levels found a "significant" relationship between two unrelated random walks in 79% of pairs with 100 steps, 92% with 1,000 steps and 96% with 5,000 steps. The regression on changes stayed at the expected false-alarm rate of about 5% (6%, 3% and 6%). More data makes the spurious regression problem worse, not better. Collecting a longer history cannot fix a regression of one trending price on another.
+
+**4. Repeat the levels versus changes comparison with another predictor.**
+
+With Brent crude, the levels regression gives R² = 0.367, but the changes regression gives only 0.045, so most of the apparent relationship came from both series drifting over time. The S&P 500 gives R² = 0.963 in levels and 0.509 in changes. That is a real same-day relationship, because JPM is part of the market. However, it is a same-day relationship, so it still does not show that the S&P 500 can forecast JPM's next-day return.
+
+**5. Where would the log return of a stock sit on the lecture slide with nine plots?**
+
+The log return belongs with the stationary series, because it fluctuates around a constant mean of zero with no trend; its 63-day rolling mean stays flat at zero throughout. It is only approximately stationary, though. The rolling standard deviation usually sits between 0.01 and 0.02 but jumped to about 0.057 in 2020, so its variance is not constant over time.
+
+**6. Change the GARCH distribution to normal. How do the parameters change, and which fit is better?**
+
+With the normal distribution, beta fell from 0.818 to 0.793 and omega rose from 0.144 to 0.203. The normal model has to explain JPM's extreme days as sudden jumps in volatility, because it does not allow fat tails. The Student's t version fits much better: its log-likelihood is −5,206.9 against −5,363.7 for the normal (and its AIC is lower, 10,424 against 10,736). Its tail parameter nu = 4.67 confirms that extreme days happen far more often than a normal distribution allows.
 
 
 ## How Your Submission Will Be Marked (Out of 100)

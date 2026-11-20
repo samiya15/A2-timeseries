@@ -28,8 +28,8 @@
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |             |
-| **Name:**                                                                                          |             |
+| **Student ID:**                                                                                    |        |150209
+| **Name:**                                                                                         |  Stacy          |
 | **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
 
 **Member 4**
@@ -321,6 +321,46 @@ The log return belongs with the stationary series, because it fluctuates around 
 
 With the normal distribution, beta fell from 0.818 to 0.793 and omega rose from 0.144 to 0.203. The normal model has to explain JPM's extreme days as sudden jumps in volatility, because it does not allow fat tails. The Student's t version fits much better: its log-likelihood is −5,206.9 against −5,363.7 for the normal (and its AIC is lower, 10,424 against 10,736). Its tail parameter nu = 4.67 confirms that extreme days happen far more often than a normal distribution allows.
 
+### Notebook 4: Multivariate machine learning forecasting
+
+**Stock:** JPMorgan Chase (JPM) | **Answered by:** Stacy Mungai
+
+
+**1. Write one sentence that a portfolio manager could understand, summarising whether your best model beats the naive forecast. Include the evidence (the DM p-value) in that sentence.**
+
+Ridge is the best-performing model because it achieved an RMSE of 2.9594 compared to 2.9620 for the naive forecast. However, the Diebold-Mariano (DM) test produced a p-value of 0.7312, which is greater than 0.05. Therefore, the improvement is not statistically significant, meaning there is insufficient evidence to conclude that Ridge genuinely outperforms the naive forecast.
+
+**2. In Step 3.2, change `center=True` to `center=False`. Does the truncation test still catch it? Why?**
+
+No, the truncation test should no longer detect look-ahead leakage after changing center=True to center=False.
+
+When center=True, a rolling window uses observations both before and after the current date, meaning future information can enter the calculation. This introduces look-ahead bias.
+Changing it to center=False ensures that the rolling calculation uses only the current and previous observations. Therefore, future information is excluded, and the truncation test should pass.
+
+**3. Add a new feature of your own to `tslab/features.py`, for example the 10-day average volume divided by the 60-day average volume. Run `check_no_lookahead` on it **before** you evaluate it.**
+
+I would introduce a feature called volume_ratio_10_60, which calculates the ratio of the 10-day average trading volume to the 60-day average trading volume.
+
+The feature helps identify changes in trading activity by comparing recent trading volume with its longer-term average.
+Before evaluating the feature, I would run check_no_lookahead to verify that it does not use future information.
+
+This is important because evaluating a feature before checking for look-ahead leakage could produce misleading model performance results.
+
+**4. Repeat the ablation in Step 8 with gradient boosting instead of Ridge (use a bigger `TEST_SIZE` to keep it fast). Do the two models agree on which groups matter?**
+
+The two models partially agree, particularly on the importance of returns, but they do not identify all the same useful feature groups. Ridge and Gradient Boosting may respond differently to feature groups because Ridge is a linear model, while Gradient Boosting can capture more complex, non-linear relationships. Therefore, the importance of a feature group depends on the model being used.
+
+**5. In Step 6, we tuned on the first 1000 days only. What is the weakness of that approach if the market changes character later? (Think about 2020.)**
+
+ The main weakness is that the first 1,000 trading days may not represent future market conditions. For example, the COVID-19 pandemic in 2020 caused unusual market volatility and changes in trading behaviour. Consequently, parameters selected using earlier data may perform poorly when market conditions change. Using rolling or expanding-window validation would help the model adapt to different market conditions.
+
+**6. Change the loss in `make_boosting` to `"absolute_error"`. Why might that be more robust for returns with fat tails?**
+
+Absolute error is more robust because it penalises prediction errors linearly rather than squaring them. This means that unusually large returns or extreme market movements have less influence on the model compared with squared-error loss. It can therefore be useful when financial returns contain extreme values, also known as fat tails.
+
+**7. Step 11 assumed we could trade at the close, at the price we used to forecast. Why is that optimistic?**
+
+This assumption is optimistic because the closing price used to generate the forecast may not be available when the trading decision is made. In reality, executing a trade may involve delays, bid-ask spreads, transaction costs and slippage. A more realistic backtest should use an achievable execution price, such as the next available trading price, and account for these costs.
 
 ### Notebook 7: Multi-horizon Forecasts and Power BI Export
 

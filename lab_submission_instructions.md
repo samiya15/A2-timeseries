@@ -44,9 +44,9 @@
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |             |
-| **Name:**                                                                                          |             |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
+| **Student ID:**                                                                                    |          112806      |
+| **Name:**                                                                                          |      Waweru Casey    |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |  I was responsible for Notebook 7 (multi-horizon forecasting and Power BI export). I evaluated JPM's forecasts across 1, 5, 21 and 63 trading days, compared the forecasting model against the naive benchmark, analysed prediction interval coverage and forecast uncertainty, and worked on preparing the forecast outputs and Power BI dashboard. I learned that forecasting accuracy generally becomes less reliable over longer horizons, that prediction intervals help communicate uncertainty, and that a complex forecasting model is not necessarily better than a simple naive forecast. |
 
 ## Scenario
 
@@ -320,6 +320,31 @@ The log return belongs with the stationary series, because it fluctuates around 
 **6. Change the GARCH distribution to normal. How do the parameters change, and which fit is better?**
 
 With the normal distribution, beta fell from 0.818 to 0.793 and omega rose from 0.144 to 0.203. The normal model has to explain JPM's extreme days as sudden jumps in volatility, because it does not allow fat tails. The Student's t version fits much better: its log-likelihood is −5,206.9 against −5,363.7 for the normal (and its AIC is lower, 10,424 against 10,736). Its tail parameter nu = 4.67 confirms that extreme days happen far more often than a normal distribution allows.
+
+
+### Notebook 7: Multi-horizon Forecasts and Power BI Export
+
+**Stock:** JPMorgan Chase (JPM) | **Answered by:** Casey Waweru
+
+**1. At which horizon is the model's skill highest and lowest? How certain can you be, given how few independent test periods a 63-day horizon has?**
+
+Using out-of-sample R² as the measure of skill, the model performs best at the 1-day horizon (R² = -0.0495) and worst at the 63-day horizon (R² = -0.3203). All four R² values are negative, indicating weak performance. The 63-day result should be interpreted cautiously because overlapping forecast periods mean the 1,657 test observations are not independent. There are only approximately 26 non-overlapping 63-day blocks across that test period, so the effective amount of independent information is much smaller.
+
+**2. Use the table in Step 4 to write the two-sentence statement for a client about the 21-day-ahead forecast.**
+
+The 21-day forecast produced an RMSE of $12.9721, compared with $12.6896 for the naive benchmark, meaning it did not improve on simply using the current price as the forecast. Its directional accuracy was 51.41%, and its 10–90% prediction interval covered 66.69% of actual outcomes, below the intended 80%, so the forecast should be treated cautiously.
+
+**3. Change `gap = h - 1` to `gap = 0` for horizon 21. Does the score improve? Why would the improvement be misleading?**
+
+
+**4. Compare the width of the 63-day range with the width of the 1-day range. Is the ratio close to the square root of 63? What does that say about how risk grows with time?**
+
+The average 1-day interval width was 3.6493%, while the 63-day interval width was 20.0378%. Their ratio is approximately 5.49, compared with the square root of 63, which is approximately 7.94. The observed ratio is therefore smaller than the square-root-of-time benchmark. This suggests that uncertainty increases with the forecast horizon, but not at exactly the square-root-of-time rate in these results. The actual 63-day coverage was only 56.67%, below the intended 80%, so the interval should be treated cautiously.
+
+**5. Train the 21-day model with Ridge instead of Gradient Boosting. Which one has the better walk-forward score?**
+
+
+**6. In Power BI, build a line chart showing the actual closing price for the past year, the forecast path, and the range on a single chart.**
 
 
 ## How Your Submission Will Be Marked (Out of 100)

@@ -4,7 +4,7 @@
 
 ## Student Details
 
-**Name of the team on GitHub Classroom:**
+**Name of the team on GitHub Classroom:** A2
 
 **Team Member Contributions:**
 
@@ -181,21 +181,15 @@ For all three tiers, submit the link to a short video (not more than 4 minutes) 
 | **Link to the video:** |           |
 
 ---
-## 1. Data
+#### 1. Data
 
 ### The stock: JPMorgan Chase & Co. (JPM)
 
-We forecast the closing price of **JPMorgan Chase (JPM)**, the largest bank in the United States, listed on the New 
-York Stock Exchange. We chose a bank because its profits depend directly on interest rates: when rates rise, the gap 
-between what a bank earns on loans and what it pays on deposits usually widens. That gives the predictors in this lab 
-a clear economic reason to matter for JPM:
+We forecast the closing price of **JPMorgan Chase (JPM)**, the largest bank in the United States, listed on the New York Stock Exchange. We chose a bank because its profits depend directly on interest rates: when rates rise, the gap between what a bank earns on loans and what it pays on deposits usually widens. That gives the predictors in this lab a clear economic reason to matter for JPM:
 
 - **S&P 500 and VIX:** JPM is a large part of the US market and moves with overall market mood.
-- **10-year US Treasury yield (US10Y):** the main interest-rate signal for a bank. In our data, JPM's daily 
-- returns correlate **0.29** with changes in the 10-year yield, about twice as strongly as the S&P 500 (0.14) or the 
-- technology fund (0.11). This supports the idea that interest rates matter more for JPM than for the market as a whole.
-- **Brent crude, gold and the US dollar:** broader economic conditions. Gold and the dollar show almost no 
-- same-day correlation with JPM (−0.06 and −0.02), so we do not expect them to help much.
+- **10-year US Treasury yield (US10Y):** the main interest-rate signal for a bank. In our data, JPM's daily returns correlate **0.29** with changes in the 10-year yield, about twice as strongly as the S&P 500 (0.14) or the technology fund (0.11). This supports the idea that interest rates matter more for JPM than for the market as a whole.
+- **Brent crude, gold and the US dollar:** broader economic conditions. Gold and the dollar show almost no same-day correlation with JPM (−0.06 and −0.02), so we do not expect them to help much.
 
 ### Source and download date
 
@@ -219,25 +213,18 @@ a clear economic reason to matter for JPM:
 | Longest gap (days) | 4 |
 | Days with a move over 10% | 7 |
 
-The data is clean: there are no duplicates, missing values, impossible prices or untraded days. The longest gap of 
-4 calendar days is a long weekend with a public holiday, not missing data. The 7 days with moves over 10% are genuine 
-market events, mostly from the COVID-19 crash of March 2020, and we kept them. Removing them would make the models look 
-more accurate than they would be in a real crisis. The predictor markets trade on a few days when the NYSE is closed 
-(2,988 rows against 2,981), so predictors are aligned to JPM's trading days and forward-filled for at most 3 days.
+The data is clean: there are no duplicates, missing values, impossible prices or untraded days. The longest gap of 4 calendar days is a long weekend with a public holiday, not missing data. The 7 days with moves over 10% are genuine market events, mostly from the COVID-19 crash of March 2020, and we kept them. Removing them would make the models look more accurate than they would be in a real crisis. The predictor markets trade on a few days when the NYSE is closed (2,988 rows against 2,981), so predictors are aligned to JPM's trading days and forward-filled for at most 3 days.
 
-With almost 12 years of history, the data is long enough for the walk-forward settings in the notebooks, so we did 
-not change `INITIAL_TRAIN`.
+With almost 12 years of history, the data is long enough for the walk-forward settings in the notebooks, so we did not change `INITIAL_TRAIN`.
 
 ### What the data shows
 
-- **Candlestick charts:** we plotted the last 90 trading days and the COVID-19 crash (February to April 2020). In the
-- crash, JPM fell from about $115 to about $66 (roughly −40%) in a month, while daily volume rose to around four times
-- its normal level.
-- **Returns are not normally distributed:** the histogram of daily log returns has a much taller peak and much fatter 
-- tails than a normal curve. The worst days were around −15%, which a normal distribution treats as practically impossible.
+- **Candlestick charts:** we plotted the last 90 trading days and the COVID-19 crash (February to April 2020). In the crash, JPM fell from about \$115 to about \$66 (roughly −40%) in a month, while daily volume rose to around four times its normal level.
+- **Returns are not normally distributed:** the histogram of daily log returns has a much taller peak and much fatter tails than a normal curve. The worst days were around −15%, which a normal distribution treats as practically impossible.
 - **Volatility clusters:** large moves come in groups (for example, 2020) rather than being spread evenly over time.
 
 ### Stationarity
+
 We tested JPM's closing price and its daily log return with two tests that ask opposite questions. The ADF test assumes the series is non-stationary, and the KPSS test assumes it is stationary. We only call a series stationary when both agree.
 
 | Series | ADF p-value | KPSS p-value | Verdict |
@@ -247,7 +234,7 @@ We tested JPM's closing price and its daily log return with two tests that ask o
 | First difference of the price | 0.0000 | 0.0963 | Stationary |
 | **Log return** | **0.0000** | **0.1000** | **Stationary** |
 
-**Conclusion:** JPM's closing price is not stationary. It trends from about $50 in 2015 to about $350 in 2026, and its 63-day rolling standard deviation grows from about 2 to about 20 dollars. The daily log return is stationary: it stays centred on zero, and both tests agree. Taking the logarithm alone was not enough, and removing a straight-line trend did not work either (ADF p = 0.85). Only differencing removed the wandering. We therefore forecast the **log return** and convert it back to a price, as the lab requires.
+**Conclusion:** JPM's closing price is not stationary. It trends from about \$50 in 2015 to about \$350 in 2026, and its 63-day rolling standard deviation grows from about 2 to about 20 dollars. The daily log return is stationary: it stays centred on zero, and both tests agree. Taking the logarithm alone was not enough, and removing a straight-line trend did not work either (ADF p = 0.85). Only differencing removed the wandering. We therefore forecast the **log return** and convert it back to a price, as the lab requires.
 
 The return is not perfectly stable, though. Its volatility comes in clusters: the rolling standard deviation is usually 0.01 to 0.02, but it rose to about 0.057 during the COVID-19 crash in 2020.
 
@@ -255,13 +242,13 @@ We also checked for a calendar pattern. No weekday had an average return that wa
 
 ## 2. Written Verdict for the Portfolio Manager
 
-**Does our model beat the naive forecast?** No, not in any way that matters. We tested seven classical models (Notebook 3) and two machine learning models using seven market predictors (Notebook 4) on days the models had never seen, using walk-forward validation. The best model, Ridge regression, had an average one-day error (RMSE) of $2.9595, against $2.9620 for the naive forecast ("tomorrow's close = today's close"). That is a difference of a quarter of a cent per share.
+**Does our model beat the naive forecast?** No, not in any way that matters. We tested seven classical models (Notebook 3) and two machine learning models using seven market predictors (Notebook 4) on days the models had never seen, using walk-forward validation. The best model, Ridge regression, had an average one-day error (RMSE) of \$2.9595, against \$2.9620 for the naive forecast ("tomorrow's close = today's close"). That is a difference of a quarter of a cent per share.
 
-**How do we know?** The Diebold-Mariano test checks whether a difference in accuracy is bigger than luck. For Ridge the p-value was 0.75, far above the 0.05 threshold, so the improvement is not statistically significant. ARMAX, the classical model using the same seven predictors, gave the same answer (p = 0.59). Gradient boosting was significantly *worse* than the naive forecast (p < 0.05). Ridge called the direction of the next day's move correctly 53.6% of the time, only slightly better than a coin toss, and too small an edge to rely on. Over longer horizons (5, 21 and 63 days), our model did not beat the naive forecast either.
+**How do we know?** The Diebold-Mariano test checks whether a difference in accuracy is bigger than luck. For Ridge the p-value was 0.75, far above the 0.05 threshold, so the improvement is not statistically significant. ARMAX, the classical model using the same seven predictors, gave the same answer (p = 0.59). Gradient boosting was significantly *worse* than the naive forecast (p < 0.05). Ridge called the direction of the next day's move correctly 53.6% of the time, only slightly better than a coin toss, and too small an edge to rely on. Over longer horizons (5, 21 and 63 days), our gradient boosting model did not beat the naive forecast either. A Ridge model did slightly better at 21 days, but only because it learned that JPM tended to rise over this period, not from the predictors.
 
 **What this means:** JPM's price moves are very hard to predict from public market data, which is what we would expect from a large, heavily traded stock in an efficient market. For practical purposes, the best single estimate of tomorrow's price is today's price.
 
-**How much should you trust the 63-day forecast?** Treat it as a range, not a target. From the last close of \$342.08 (9 November 2026), the central forecast for early February 2027 is about \$372, with an 80% range of roughly \$332 to \$415. When we tested these ranges on past data, the actual price fell inside the one-day range about 77% of the time, close to the intended 80%. Inside the 63-day range, though, it was only about 57%. The longer the horizon, the more **overconfident** the model becomes: the real uncertainty over a quarter is larger than the range suggests.
+**How much should you trust the 63-day forecast?** Treat it as a range, not a target. From the last close of \$342.08 (9 November 2026), the central forecast for early February 2027 is about \$372, with an 80% range of roughly \$332 to \$415. When we tested these ranges on past data, the actual price fell inside the one-day range about 77% of the time, close to the intended 80%. Inside the 63-day range, though, it was only about 58%. The longer the horizon, the more **overconfident** the model becomes: the real uncertainty over a quarter is larger than the range suggests.
 
 **Bottom line:** Do not use this model to time trades in JPM. Its value is in showing how wide the realistic range of outcomes is over the next quarter, and even that range should be treated as too narrow.
 ## Notebook Exercise Answers

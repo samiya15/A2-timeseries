@@ -28,16 +28,16 @@
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |        |150209
-| **Name:**                                                                                         |  Stacy          |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
+| **Student ID:**                                                                                    |        |153527
+| **Name:**                                                                                         |  Veronicah Mbuvi     |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |         I was responsible for Notebook 3, where I worked on predicting JPMorgan Chase's stock returns using different forecasting models. I tested models such as Drift, Moving Average, ARIMA, ARMA, ARMAX and SARIMA. I compared their results to see which one performed better. I also checked how accurate the predictions were and tested whether the models were reliable. I learned that using more complicated models does not always give better results and that it is important to use the correct past data when making predictions.    |
 
 **Member 4**
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |             |
-| **Name:**                                                                                          |             |
+| **Student ID:**                                                                                    |       150209      |
+| **Name:**                                                                                          |   Stacy          |
 | **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
 
 **Member 5**
@@ -320,6 +320,41 @@ The log return belongs with the stationary series, because it fluctuates around 
 **6. Change the GARCH distribution to normal. How do the parameters change, and which fit is better?**
 
 With the normal distribution, beta fell from 0.818 to 0.793 and omega rose from 0.144 to 0.203. The normal model has to explain JPM's extreme days as sudden jumps in volatility, because it does not allow fat tails. The Student's t version fits much better: its log-likelihood is −5,206.9 against −5,363.7 for the normal (and its AIC is lower, 10,424 against 10,736). Its tail parameter nu = 4.67 confirms that extreme days happen far more often than a normal distribution allows.
+
+## Notebook3: Classical and Forecasting baselines
+
+**Stock:** JPMorgan Chase (JPM) | **Answered by:** Veronicah Mbuvi
+
+**1. Which model has the lowest RMSE? Is it significantly better than the naive forecast according to the Diebold-Mariano test? Write one sentence that a manager could understand.**
+
+ANS:The Drift model has the lowest RMSE, but it is not significantly better than the naive forecast.
+
+**2. In the SES section, what does an alpha close to 1 say about the series?**
+
+ ANS:An alpha close to 1 means that the model gives more weight to recent observations than to older observations. This means that recent stock movements have a strong influence on the forecast.
+
+**3. Compare `ARMA(1,0), own past only` with `ARMAX(1,0), 7 predictors`. Did the extra predictors improve the out-of-sample R2? Offer one possible reason for your finding.**
+
+ANS:The extra predictors did not improve the out-of-sample R^2. Both models performed slightly worse than the naive benchmark. One possible reason is that external market variables do not provide enough useful information to predict JPM's next-day returns.
+
+**4. Remove the `.shift(1)` in Step 5 (so that the predictors are from day s instead of s-1), and run the comparison again. What happens to the R2 and the directional accuracy? Why is the result worthless, even though it looks wonderful?**
+
+ANS:Removing .shift(1) increased the out-of-sample R^2 from -0.0069 to 0.6104 and directional accuracy from 53.34% to 75.35%. However, the results are misleading because the model uses same-day predictor information.
+
+**5. Add a SARIMA model with `seasonal_order=(1, 0, 0, 5)` (a weekly pattern). Does it improve on ARMA(1,0)? Does your answer agree with Notebook 2, Step 8?**
+
+ANS:SARIMA performed almost the same as ARMA. However,it had slightly lower RMSE (2.9644 compared to 2.9670) and slightly higher directional accuracy (51.77% compared to 51.38%). However, its R^2 was slightly worse (-0.0095 compared to -0.0087). This suggests that adding a weekly seasonal component of five trading days did not significantly improve forecasting performance. The results are  similar to those obtained in Notebook 2, suggesting that the weekly seasonal pattern provides little additional predictive value.
+
+**6. Change the moving average window in Step 3.3 from 20 to 5, and then to 60. How does the lag change, and why?**
+
+ANS:5 days: Reacts quickly to recent price changes but is more sensitive to short-term changes.
+20 days: Provides a balance between recent and older price movements.
+60 days: Produces a smoother forecast but reacts more slowly to changes.
+
+**7. In Step 9, the interval grows with the horizon. By what factor does the width at day 63 exceed the width at day 1? (Hint: what is the square root of 63?)**
+
+ANS:The forecast interval at day 63 is approximately 7.94 times wider than the interval at day. This happens because uncertainty increases as the forecast horizon becomes longer
+
 
 ### Notebook 4: Multivariate machine learning forecasting
 

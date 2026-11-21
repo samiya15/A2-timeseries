@@ -253,7 +253,17 @@ The return is not perfectly stable, though. Its volatility comes in clusters: th
 
 We also checked for a calendar pattern. No weekday had an average return that was significantly different from zero (the largest t-statistic was 1.37, for Wednesday), and the 21-day seasonal component of the decomposition had a range of only 0.007, against 2.15 for the trend. JPM's daily returns show no seasonality worth modelling.
 
----
+## 2. Written Verdict for the Portfolio Manager
+
+**Does our model beat the naive forecast?** No, not in any way that matters. We tested seven classical models (Notebook 3) and two machine learning models using seven market predictors (Notebook 4) on days the models had never seen, using walk-forward validation. The best model, Ridge regression, had an average one-day error (RMSE) of $2.9595, against $2.9620 for the naive forecast ("tomorrow's close = today's close"). That is a difference of a quarter of a cent per share.
+
+**How do we know?** The Diebold-Mariano test checks whether a difference in accuracy is bigger than luck. For Ridge the p-value was 0.75, far above the 0.05 threshold, so the improvement is not statistically significant. ARMAX, the classical model using the same seven predictors, gave the same answer (p = 0.59). Gradient boosting was significantly *worse* than the naive forecast (p < 0.05). Ridge called the direction of the next day's move correctly 53.6% of the time, only slightly better than a coin toss, and too small an edge to rely on. Over longer horizons (5, 21 and 63 days), our model did not beat the naive forecast either.
+
+**What this means:** JPM's price moves are very hard to predict from public market data, which is what we would expect from a large, heavily traded stock in an efficient market. For practical purposes, the best single estimate of tomorrow's price is today's price.
+
+**How much should you trust the 63-day forecast?** Treat it as a range, not a target. From the last close of \$342.08 (9 November 2026), the central forecast for early February 2027 is about \$372, with an 80% range of roughly \$332 to \$415. When we tested these ranges on past data, the actual price fell inside the one-day range about 77% of the time, close to the intended 80%. Inside the 63-day range, though, it was only about 57%. The longer the horizon, the more **overconfident** the model becomes: the real uncertainty over a quarter is larger than the range suggests.
+
+**Bottom line:** Do not use this model to time trades in JPM. Its value is in showing how wide the realistic range of outcomes is over the next quarter, and even that range should be treated as too narrow.
 ## Notebook Exercise Answers
 
 ### Notebook 1: Market Data, Candlestick Charts, and Returns
@@ -363,28 +373,19 @@ ANS:The forecast interval at day 63 is approximately 7.94 times wider than the i
 
 **1. Write one sentence that a portfolio manager could understand, summarising whether your best model beats the naive forecast. Include the evidence (the DM p-value) in that sentence.**
 
-Ridge is the best-performing model because it achieved an RMSE of 2.9594 compared to 2.9620 for the naive forecast. However, the Diebold-Mariano (DM) test produced a p-value of 0.7312, which is greater than 0.05. Therefore, the improvement is not statistically significant, meaning there is insufficient evidence to conclude that Ridge genuinely outperforms the naive forecast.
+Our best model, Ridge regression, had a one-day error of \$2.9595 against \$2.9620 for simply assuming tomorrow's price equals today's, but the Diebold-Mariano test gives a p-value of 0.7476, so this tiny improvement is not statistically significant and the model does not genuinely beat the naive forecast.
 
 **2. In Step 3.2, change `center=True` to `center=False`. Does the truncation test still catch it? Why?**
 
-No, the truncation test should no longer detect look-ahead leakage after changing center=True to center=False.
+No. With `center=False` the test passes, because there is no longer a leak to catch. A centred 5-day window for day t uses the prices of days t+1 and t+2, which are not known on day t, so removing the future changes the value and the test flags it. A trailing window (`center=False`) uses only day t and the four days before it, so its value is the same whether or not the future is in the table.
 
-When center=True, a rolling window uses observations both before and after the current date, meaning future information can enter the calculation. This introduces look-ahead bias.
-Changing it to center=False ensures that the rolling calculation uses only the current and previous observations. Therefore, future information is excluded, and the truncation test should pass.
+**3. Add a new feature of your own to `tslab/features.py`. Run `check_no_lookahead` on it before you evaluate it.**
 
-**3. Add a new feature of your own to `tslab/features.py`, for example the 10-day average volume divided by the 60-day average volume. Run `check_no_lookahead` on it **before** you evaluate it.**
+We added `volume_ratio_10_60`, the 10-day average trading volume divided by the 60-day average. It shows whether trading activity is unusually high or low compared with normal, which often happens around news or market stress. Before using it, we ran `check_no_lookahead` on the full feature set including the new feature, and it passed: the value does not change when future rows are removed, because both averages use only past days.
 
-I would introduce a feature called volume_ratio_10_60, which calculates the ratio of the 10-day average trading volume to the 60-day average trading volume.
+**4. Repeat the ablation in Step 8 with gradient boosting. Do the two models agree on which groups matter?**
 
-The feature helps identify changes in trading activity by comparing recent trading volume with its longer-term average.
-Before evaluating the feature, I would run check_no_lookahead to verify that it does not use future information.
-
-This is important because evaluating a feature before checking for look-ahead leakage could produce misleading model performance results.
-
-**4. Repeat the ablation in Step 8 with gradient boosting instead of Ridge (use a bigger `TEST_SIZE` to keep it fast). Do the two models agree on which groups matter?**
-
-The two models partially agree, particularly on the importance of returns, but they do not identify all the same useful feature groups. Ridge and Gradient Boosting may respond differently to feature groups because Ridge is a linear model, while Gradient Boosting can capture more complex, non-linear relationships. Therefore, the importance of a feature group depends on the model being used.
-
+No, they mostly disagree. For Ridge, the past returns of JPM itself helped most (R² fell from 0.00070 to 0.00052 without them), and removing the other markets improved the model slightly (to 0.00094). For gradient boosting it was the opposite: removing the other markets made it worse (−0.01055 to −0.01230), while removing past returns made it better (−0.00753). All these differences are below 0.005 in R², which is far too small to be a real finding, and gradient boosting was worse than the naive forecast with every combination of groups. The disagreement itself shows that no group of predictors gives a reliable edge for JPM.
 **5. In Step 6, we tuned on the first 1000 days only. What is the weakness of that approach if the market changes character later? (Think about 2020.)**
 
  The main weakness is that the first 1,000 trading days may not represent future market conditions. For example, the COVID-19 pandemic in 2020 caused unusual market volatility and changes in trading behaviour. Consequently, parameters selected using earlier data may perform poorly when market conditions change. Using rolling or expanding-window validation would help the model adapt to different market conditions.

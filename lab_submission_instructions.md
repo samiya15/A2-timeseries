@@ -28,17 +28,18 @@
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |        |153527
-| **Name:**                                                                                         |  Veronicah Mbuvi     |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |         I was responsible for Notebook 3, where I worked on predicting JPMorgan Chase's stock returns using different forecasting models. I tested models such as Drift, Moving Average, ARIMA, ARMA, ARMAX and SARIMA. I compared their results to see which one performed better. I also checked how accurate the predictions were and tested whether the models were reliable. I learned that using more complicated models does not always give better results and that it is important to use the correct past data when making predictions.    |
+|**Student ID:**                                                                                    |        |
+| **Name:**                                                                                         |         |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
 
 **Member 4**
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-| **Student ID:**                                                                                    |       150209      |
-| **Name:**                                                                                          |   Stacy          |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
+|**Student ID:**                                                                                    |         150209    |
+| **Name:**                                                                                          |    Mungai Stacy         |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |    
+I contributed to Notebook 4, focusing on multivariate time-series forecasting using Ridge Regression and Gradient Boosting. I worked on feature engineering, model tuning, walk-forward validation and feature ablation to evaluate how different predictor groups influenced forecasting performance. I learned how to prepare financial time-series data, prevent look-ahead bias, evaluate models against a naive forecasting baseline and interpret performance metrics such as RMSE, MAE and R². I also learned that more complex models and additional predictors do not necessarily guarantee better forecasting accuracy.         |
 
 **Member 5**
 
@@ -372,7 +373,12 @@ We added `volume_ratio_10_60`, the 10-day average trading volume divided by the 
 
 **4. Repeat the ablation in Step 8 with gradient boosting. Do the two models agree on which groups matter?**
 
-No, they mostly disagree. For Ridge, the past returns of JPM itself helped most (R² fell from 0.00070 to 0.00052 without them), and removing the other markets improved the model slightly (to 0.00094). For gradient boosting it was the opposite: removing the other markets made it worse (−0.01055 to −0.01230), while removing past returns made it better (−0.00753). All these differences are below 0.005 in R², which is far too small to be a real finding, and gradient boosting was worse than the naive forecast with every combination of groups. The disagreement itself shows that no group of predictors gives a reliable edge for JPM.
+The feature ablation analysis was repeated using the tuned Gradient Boosting model and compared with the Ridge Regression results.
+The Ridge Regression results showed that historical returns were the most useful individual predictor group, achieving an R² of 0.00107. Removing returns reduced the model's R² to 0.00052, suggesting that historical returns contributed positively to its forecasting performance. Removing other-market predictors increased the R² to 0.00094, suggesting that this group provided limited additional value.
+
+For Gradient Boosting, the model using all features achieved an R² of -0.01055, indicating performance below the naive forecasting benchmark. Calendar features achieved the best individual group R² of -0.00343, followed by volume at -0.00764. Removing technical indicators reduced the R² to -0.01533, while removing other-market predictors reduced it to -0.01230. This suggests that technical and other-market predictors contributed positively to Gradient Boosting's performance. However, removing returns improved the R² to -0.00753, suggesting that this group did not improve the model.
+
+Overall, the two models do not agree completely on which predictor groups matter. Ridge Regression benefits most from historical returns, whereas Gradient Boosting appears to benefit more from technical and other-market predictors. Additionally, Gradient Boosting performed worse than the naive benchmark, while Ridge Regression achieved a small positive R². This demonstrates that different machine-learning models can respond differently to the same predictor groups.
 **5. In Step 6, we tuned on the first 1000 days only. What is the weakness of that approach if the market changes character later? (Think about 2020.)**
 
  The main weakness is that the first 1,000 trading days may not represent future market conditions. For example, the COVID-19 pandemic in 2020 caused unusual market volatility and changes in trading behaviour. Consequently, parameters selected using earlier data may perform poorly when market conditions change. Using rolling or expanding-window validation would help the model adapt to different market conditions.

@@ -404,25 +404,27 @@ This assumption is optimistic because the closing price used to generate the for
 
 **1. At which horizon is the model's skill highest and lowest? How certain can you be, given how few independent test periods a 63-day horizon has?**
 
-Using out-of-sample R² as the measure of skill, the model performs best at the 1-day horizon (R² = -0.0495) and worst at the 63-day horizon (R² = -0.3203). All four R² values are negative, indicating weak performance. The 63-day result should be interpreted cautiously because overlapping forecast periods mean the 1,657 test observations are not independent. There are only approximately 26 non-overlapping 63-day blocks across that test period, so the effective amount of independent information is much smaller.
+The model's out-of-sample R² is negative at every horizon, so it never beats the naive forecast. It is least bad at 1 day (R² = −0.047) and worst at 63 days (R² = −0.300), and it gets steadily worse as the horizon grows (−0.113 at 5 days, −0.171 at 21 days). The 63-day result is also the least certain: its 1,657 test rows overlap heavily, so they contain only about 26 independent quarters, which is far too few to draw firm conclusions from.
 
 **2. Use the table in Step 4 to write the two-sentence statement for a client about the 21-day-ahead forecast.**
 
-The 21-day forecast produced an RMSE of $12.9721, compared with $12.6896 for the naive benchmark, meaning it did not improve on simply using the current price as the forecast. Its directional accuracy was 51.41%, and its 10–90% prediction interval covered 66.69% of actual outcomes, below the intended 80%, so the forecast should be treated cautiously.
+Our 21-day forecast was slightly less accurate than simply assuming the price stays where it is (an average error of \$13.01 against \$12.69), and it called the direction correctly only 51% of the time, so it gives no reliable view on whether JPM will be higher or lower in a month. Our 80% range for the price in 21 days was about 14% of the price wide, but in testing the actual price fell inside it only 67% of the time, so the real uncertainty is larger than the range suggests.
 
 **3. Change `gap = h - 1` to `gap = 0` for horizon 21. Does the score improve? Why would the improvement be misleading?**
 
+Yes. Without the gap, the R² improved from −0.171 to −0.110, the RMSE fell from \$13.01 to \$12.82, and the directional accuracy rose from 51.2% to 54.1%. The improvement is fake. Each 21-day label overlaps the next 20 days, so without a gap the last training rows contain returns from inside the test period. The model is partly being tested on information it was trained on, and that would never be available when forecasting for real.
 
 **4. Compare the width of the 63-day range with the width of the 1-day range. Is the ratio close to the square root of 63? What does that say about how risk grows with time?**
 
-The average 1-day interval width was 3.6493%, while the 63-day interval width was 20.0378%. Their ratio is approximately 5.49, compared with the square root of 63, which is approximately 7.94. The observed ratio is therefore smaller than the square-root-of-time benchmark. This suggests that uncertainty increases with the forecast horizon, but not at exactly the square-root-of-time rate in these results. The actual 63-day coverage was only 56.67%, below the intended 80%, so the interval should be treated cautiously.
+The 1-day range was 3.65% of the price wide and the 63-day range was 20.18%, a ratio of 5.5, below the square root of 63 (about 7.9). This does not mean risk grows more slowly than the square-root-of-time rule. The share of actual prices inside the range fell from 79% at 1 day to 58% at 63 days, so the long-horizon ranges are too narrow. The model underestimates how far the price can drift over a quarter, and the true 63-day range should be wider.
 
-**5. Train the 21-day model with Ridge instead of Gradient Boosting. Which one has the better walk-forward score?**
+**5. Train the 21-day model with Ridge instead of gradient boosting. Which one has the better walk-forward score?**
 
+Ridge scored better: an RMSE of \$12.44 against \$13.01 for gradient boosting and \$12.69 for the naive forecast, a slightly positive R² of 0.013, and a directional accuracy of 61.2%. However, JPM rose in exactly 61.2% of all 21-day periods in the test data. With its very strong penalty (alpha = 100,000), Ridge has learned little more than "JPM tends to drift upward" and predicts a small rise almost every time. Its edge comes from the stock's upward trend during this period, not from the predictors, and it would disappear in a falling market.
 
 **6. In Power BI, build a line chart showing the actual closing price for the past year, the forecast path, and the range on a single chart.**
 
-
+*(To be added by Casey Waweru: a screenshot of the Power BI chart and a short description.)*
 ## How Your Submission Will Be Marked (Out of 100)
 
 | #   | What you need to show                                                                                                                | Marks |

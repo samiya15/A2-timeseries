@@ -420,7 +420,6 @@ The dashboard below compares JPM's forecast methods, displays the 63-day forecas
 
 ![JPM Power BI Dashboard](./assets/images/powerbi_dashboard.png)
 
-*(To be added by Casey Waweru: a screenshot of the Power BI chart and a short description.)*
 ## How Your Submission Will Be Marked (Out of 100)
 
 | #   | What you need to show                                                                                                                | Marks |

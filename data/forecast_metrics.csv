@@ -1,0 +1,7 @@
+method,rmse,mae,r2_returns,directional_accuracy,dm_p_value_vs_naive
+Naive,2.962,2.0043,0,,
+ARIMA(0;1;0),2.962,2.0043,0,,0.7921
+Drift,2.9595,1.9969,0.0009,0.5357,0.6152
+ARMAX(1;0),2.9736,2.012,-0.0069,0.534,0.5933
+Ridge,2.9595,1.9974,0.0007,0.5362,0.7476
+Gradient boosting,2.983,2.003,-0.0106,0.5177,0.0458

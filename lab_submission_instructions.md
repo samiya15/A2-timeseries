@@ -416,6 +416,9 @@ The 1-day range was 3.65% of the price wide and the 63-day range was 20.18%, a r
 Ridge scored better: an RMSE of \$12.44 against \$13.01 for gradient boosting and \$12.69 for the naive forecast, a slightly positive R² of 0.013, and a directional accuracy of 61.2%. However, JPM rose in exactly 61.2% of all 21-day periods in the test data. With its very strong penalty (alpha = 100,000), Ridge has learned little more than "JPM tends to drift upward" and predicts a small rise almost every time. Its edge comes from the stock's upward trend during this period, not from the predictors, and it would disappear in a falling market.
 
 **6. In Power BI, build a line chart showing the actual closing price for the past year, the forecast path, and the range on a single chart.**
+The dashboard below compares JPM's forecast methods, displays the 63-day forecast values and prediction intervals, and summarizes model performance against the naive benchmark.
+
+![JPM Power BI Dashboard](./assets/images/powerbi_dashboard.png)
 
 *(To be added by Casey Waweru: a screenshot of the Power BI chart and a short description.)*
 ## How Your Submission Will Be Marked (Out of 100)

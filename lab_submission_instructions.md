@@ -28,18 +28,17 @@
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-|**Student ID:**                                                                                    |        |
-| **Name:**                                                                                         |         |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |             |
+| **Student ID:**                                                                                    | 153527 |
+| **Name:**                                                                                          | Veronicah Mbuvi |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** | I was responsible for Notebook 3, where I worked on predicting JPMorgan Chase's stock returns using different forecasting models. I tested models such as Drift, Moving Average, ARIMA, ARMA, ARMAX and SARIMA. I compared their results to see which one performed better. I also checked how accurate the predictions were and tested whether the models were reliable. I learned that using more complicated models does not always give better results and that it is important to use the correct past data when making predictions. |
 
 **Member 4**
 
 | **Details**                                                                                        | **Comment** |
 |:---------------------------------------------------------------------------------------------------|:------------|
-|**Student ID:**                                                                                    |         150209    |
-| **Name:**                                                                                          |    Mungai Stacy         |
-| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** |    
-I contributed to Notebook 4, focusing on multivariate time-series forecasting using Ridge Regression and Gradient Boosting. I worked on feature engineering, model tuning, walk-forward validation and feature ablation to evaluate how different predictor groups influenced forecasting performance. I learned how to prepare financial time-series data, prevent look-ahead bias, evaluate models against a naive forecasting baseline and interpret performance metrics such as RMSE, MAE and R². I also learned that more complex models and additional predictors do not necessarily guarantee better forecasting accuracy.         |
+| **Student ID:**                                                                                    | 150209 |
+| **Name:**                                                                                          | Mungai Stacy |
+| **What part of the lab did you personally contribute to,** <br>**and what did you learn from it?** | I contributed to Notebook 4, focusing on multivariate time-series forecasting using Ridge Regression and Gradient Boosting. I worked on feature engineering, model tuning, walk-forward validation and feature ablation to evaluate how different predictor groups influenced forecasting performance. I learned how to prepare financial time-series data, prevent look-ahead bias, evaluate models against a naive forecasting baseline and interpret performance metrics such as RMSE, MAE and R². I also learned that more complex models and additional predictors do not necessarily guarantee better forecasting accuracy. |
 
 **Member 5**
 

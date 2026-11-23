@@ -179,8 +179,7 @@ For all three tiers, submit the link to a short video (not more than 4 minutes) 
 
 | **Key**                | **Value** |
 |:-----------------------|:----------|
-| **Link to the video:** |           |
-
+| **Link to the video:** |   [Video 1](https://youtu.be/kFEMSRUjdTs) <br> [Video 2](https://youtu.be/UC0pSOtECNc)        |
 ---
 #### 1. Data
 
